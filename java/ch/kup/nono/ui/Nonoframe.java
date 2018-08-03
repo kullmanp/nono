@@ -1,15 +1,18 @@
-package ch.kup.nono.solver;
+package ch.kup.nono.ui;
+
+import ch.kup.nono.CellState;
+import ch.kup.nono.Nonogram;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Nonoframe extends JPanel {
+class Nonoframe extends JPanel {
     private final Nonogram nonogram;
 
     private static final int MARGIN = 40;
     private static final int CELL_SIZE = 20;
 
-    public Nonoframe(Nonogram nonogram) {
+    Nonoframe(Nonogram nonogram) {
         this.nonogram = nonogram;
     }
 
@@ -28,14 +31,14 @@ public class Nonoframe extends JPanel {
         }
     }
 
-    private void drawStateOfCell(Graphics g, int row, int col, Nonogram.State state) {
+    private void drawStateOfCell(Graphics g, int row, int col, CellState state) {
         int x = MARGIN + col * CELL_SIZE + 1;
         int y = MARGIN + row * CELL_SIZE + 1;
         g.setColor(getColor(state));
         g.fillRect(x, y, CELL_SIZE - 1, CELL_SIZE - 1);
     }
 
-    private Color getColor(Nonogram.State state) {
+    private Color getColor(CellState state) {
         switch (state) {
             case FILLED:
                 return Color.BLACK;
@@ -87,19 +90,14 @@ public class Nonoframe extends JPanel {
         return new BasicStroke(2);
     }
 
-    public void go() {
-        nonogram.solve();
+    void solveWithLineSolver() {
+        nonogram.solveWithLineSolver();
         repaint();
     }
 
-    public void go2() {
-        new Thread(
-                () -> nonogram.solve2(() -> SwingUtilities.invokeLater(() -> repaint()))
-        ).run();
-    }
-
-    public void toggle() {
-        nonogram.toggleState();
+    void solveWithProbe() {
+        nonogram.solveWithProbe();
         repaint();
     }
+
 }

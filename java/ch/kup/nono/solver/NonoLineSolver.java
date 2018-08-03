@@ -1,10 +1,13 @@
 package ch.kup.nono.solver;
 
+import ch.kup.nono.CellState;
+import ch.kup.nono.Hint;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ch.kup.nono.solver.Nonogram.State.*;
+import static ch.kup.nono.CellState.*;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -46,7 +49,7 @@ public abstract class NonoLineSolver implements NonoLine {
         for (Hint hint : getHints()) {
             if (hint.getLength() > slack) {
                 for (int i = pos + slack; i < pos + hint.getLength(); i++) {
-                    setState(i, Nonogram.State.FILLED);
+                    setState(i, CellState.FILLED);
                 }
             }
             if (slack == 0 && pos + hint.getLength() < size()) {
@@ -116,8 +119,8 @@ public abstract class NonoLineSolver implements NonoLine {
                         .stream()
                         .filter(e -> ranges.contains(e.getKey()))
                         .sorted(Comparator.comparing(e -> e.getKey().start))
-                        .map(e -> e.getValue())
-                        .flatMap(l -> l.stream())
+                        .map(Map.Entry::getValue)
+                        .flatMap(Collection::stream)
                         .collect(Collectors.toList())
                 )
                 .distinct()
@@ -139,12 +142,12 @@ public abstract class NonoLineSolver implements NonoLine {
             }
 
             @Override
-            public Nonogram.State getState(int i) {
+            public CellState getState(int i) {
                 return parent.getState(start + i);
             }
 
             @Override
-            public void setState(int i, Nonogram.State state) {
+            public void setState(int i, CellState state) {
                 parent.setState(start + i, state);
             }
 

@@ -1,9 +1,9 @@
-package ch.kup.nono.solver;
+package ch.kup.nono.ui;
+
+import ch.kup.nono.Examples;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Gui {
     public Gui() {
@@ -14,23 +14,17 @@ public class Gui {
         frame.add(nonoframe, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton button = new JButton("Go");
+        JButton button = new JButton("Line solver");
         button.addActionListener(e -> {
-            nonoframe.go();
+            nonoframe.solveWithLineSolver();
         });
         buttonPanel.add(button);
 
-        JButton button2 = new JButton("Go2");
+        JButton button2 = new JButton("Probe solver");
         button2.addActionListener(e -> {
-            nonoframe.go2();
+            nonoframe.solveWithProbe();
         });
         buttonPanel.add(button2);
-
-        JButton buttonToggle = new JButton("Toggle");
-        buttonToggle.addActionListener(e -> {
-            nonoframe.toggle();
-        });
-        buttonPanel.add(buttonToggle);
 
         frame.add(buttonPanel, BorderLayout.SOUTH);
 

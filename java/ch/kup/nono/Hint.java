@@ -1,4 +1,4 @@
-package ch.kup.nono.solver;
+package ch.kup.nono;
 
 public class Hint {
     private final int length;

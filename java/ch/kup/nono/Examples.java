@@ -1,6 +1,7 @@
-package ch.kup.nono.solver;
+package ch.kup.nono;
 
-import ch.kup.nono.solver.Nonogram.NonogramBuilder;
+import ch.kup.nono.Nonogram;
+import ch.kup.nono.Nonogram.NonogramBuilder;
 
 public class Examples {
 
@@ -196,37 +197,4 @@ public class Examples {
         return builder.build();
     }
 
-    public static String printAsTealNonogram(Nonogram nonogram) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"ver\":[");
-        printRows(nonogram, sb);
-        sb.append("]");
-        sb.append(", \"hor\":[");
-        printColumns(nonogram, sb);
-        sb.append("]}");
-
-        return sb.toString();
-    }
-
-    private static void printRows(Nonogram nonogram, StringBuilder sb) {
-        nonogram.getRowHints().stream()
-                .forEach(l -> {
-                    sb.append(l.toString());
-                    sb.append(",");
-                });
-        sb.deleteCharAt(sb.length() - 1);
-    }
-
-    private static void printColumns(Nonogram nonogram, StringBuilder sb) {
-        nonogram.getColHints().stream()
-                .forEach(l -> {
-                    sb.append(l.toString());
-                    sb.append(",");
-                });
-        sb.deleteCharAt(sb.length() - 1);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(printAsTealNonogram(createExample52()));
-    }
 }

@@ -1,21 +1,19 @@
-package ch.kup.nono.solver;
-
-import ch.kup.nono.solver.Nonogram.State;
+package ch.kup.nono;
 
 import java.util.Arrays;
 
 public class Nonostate {
-    private State[][] state;
+    private CellState[][] state;
     private int rows;
     private int cols;
 
     public Nonostate(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        state = new State[rows][cols];
+        state = new CellState[rows][cols];
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                state[row][col] = State.UNTOUCHED;
+                state[row][col] = CellState.UNTOUCHED;
             }
         }
     }
@@ -30,12 +28,12 @@ public class Nonostate {
         return newState;
     }
 
-    public State get(int row, int col) {
+    public CellState get(int row, int col) {
         return state[row][col];
     }
 
-    public void set(int row, int col, State newState) {
-        if (get(row, col) != State.UNTOUCHED && newState != get(row, col))
+    public void set(int row, int col, CellState newState) {
+        if (get(row, col) != CellState.UNTOUCHED && newState != get(row, col))
             throw new IllegalStateException(
                     String.format("Setting different state (%s) for a field that was already touched: [%d,%d] was %s",
                             newState, row, col, get(row, col).digit()));
@@ -46,7 +44,7 @@ public class Nonostate {
         int sum = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                if (state[i][j] == State.UNTOUCHED)
+                if (state[i][j] == CellState.UNTOUCHED)
                     sum++;
             }
         }

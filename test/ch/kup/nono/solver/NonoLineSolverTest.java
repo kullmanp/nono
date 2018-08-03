@@ -1,5 +1,7 @@
 package ch.kup.nono.solver;
 
+import ch.kup.nono.CellState;
+import ch.kup.nono.Hint;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -7,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static ch.kup.nono.solver.Nonogram.State.*;
+import static ch.kup.nono.CellState.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class NonoLineSolverTest {
     private List<Hint> hints = new ArrayList<>();
-    private List<Nonogram.State> state = new ArrayList<>();
+    private List<CellState> state = new ArrayList<>();
     NonoLineSolver cut;
 
 
@@ -26,12 +28,12 @@ public class NonoLineSolverTest {
             }
 
             @Override
-            public Nonogram.State getState(int i) {
+            public CellState getState(int i) {
                 return state.get(i);
             }
 
             @Override
-            public void setState(int i, Nonogram.State newState) {
+            public void setState(int i, CellState newState) {
                 state.set(i, newState);
             }
 
@@ -43,7 +45,7 @@ public class NonoLineSolverTest {
     }
 
     private void init(int size) {
-        IntStream.range(0, size).forEach(i -> state.add(Nonogram.State.UNTOUCHED));
+        IntStream.range(0, size).forEach(i -> state.add(CellState.UNTOUCHED));
     }
 
     @Test
@@ -87,9 +89,9 @@ public class NonoLineSolverTest {
         init(3);
         addHint(2);
         cut.performSolveStep();
-        assertThat(cut.getState(0), is(Nonogram.State.UNTOUCHED));
+        assertThat(cut.getState(0), is(CellState.UNTOUCHED));
         assertThat(cut.getState(1), is(FILLED));
-        assertThat(cut.getState(2), is(Nonogram.State.UNTOUCHED));
+        assertThat(cut.getState(2), is(CellState.UNTOUCHED));
     }
 
     @Test

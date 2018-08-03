@@ -1,58 +1,32 @@
-package ch.kup.nono.solver;
+package ch.kup.nono;
+
+import ch.kup.nono.solver.NonoLine;
+import ch.kup.nono.solver.NonoLineSolver;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ch.kup.nono.solver.Nonogram.State.*;
+import static ch.kup.nono.CellState.*;
 
-class Nonogram {
+public class Nonogram {
     private List<List<Hint>> rowHints = new ArrayList<>();
     private List<List<Hint>> colHints = new ArrayList<>();
     private Nonostate state;
 
-    private Set<Nonostate> solutionsContainer;
-
-    int getRows() {
+    public int getRows() {
         return rowHints.size();
     }
 
-    int getCols() {
+    public int getCols() {
         return colHints.size();
     }
 
-    public Nonostate getNonostate() {
-        return state;
-    }
-
-    public enum State {
-        UNTOUCHED('.'), EMPTY('-'), FILLED('X');
-
-        private char digit;
-
-        State(char digit) {
-            this.digit = digit;
-        }
-
-        public char digit() {
-            return digit;
-        }
-
-    }
-
-    public List<List<Hint>> getRowHints() {
-        return rowHints;
-    }
-
-    public List<List<Hint>> getColHints() {
-        return colHints;
-    }
-
-    State getState(int row, int col) {
-        if (state == null) return State.UNTOUCHED;
+    public CellState getState(int row, int col) {
+        if (state == null) return CellState.UNTOUCHED;
         return state.get(row, col);
     }
 
-    void solve() {
+    public void solveWithLineSolver() {
         if (state == null) {
             state = new Nonostate(getRows(), getCols());
         }
@@ -60,24 +34,24 @@ class Nonogram {
         System.out.println("Untouched pieces: " + state.getUntouchedCount());
     }
 
-    void solve2(Runnable callback) {
-        probeSolveFilled(state, callback);
+    public void solveWithProbe() {
+        probeSolveFilled(state);
         doDeterministicSolveUntilNoFurtherChange(state);
         System.out.println("Untouched pieces: " + state.getUntouchedCount());
-        probeSolveEmpty(state, callback);
+        probeSolveEmpty(state);
         doDeterministicSolveUntilNoFurtherChange(state);
         System.out.println("Untouched pieces: " + state.getUntouchedCount());
     }
 
-    private void probeSolveFilled(Nonostate probeState, Runnable callback) {
-        probeSolve(probeState, FILLED, callback);
+    private void probeSolveFilled(Nonostate probeState) {
+        probeSolve(probeState, FILLED);
     }
 
-    private void probeSolveEmpty(Nonostate probeState, Runnable callback) {
-        probeSolve(probeState, EMPTY, callback);
+    private void probeSolveEmpty(Nonostate probeState) {
+        probeSolve(probeState, EMPTY);
     }
 
-    private void probeSolve(Nonostate probeState, State newState, Runnable callback) {
+    private void probeSolve(Nonostate probeState, CellState newState) {
         for (int row = 0; row < getRows(); row++) {
             for (int col = 0; col < getCols(); col++) {
                 if (probeState.get(row, col) == UNTOUCHED) {
@@ -88,26 +62,17 @@ class Nonogram {
                     } catch (Exception e) {
                         probeState.set(row, col, newState == FILLED ? EMPTY : FILLED);
                         doDeterministicSolveUntilNoFurtherChange(probeState);
-                        callback.run();
                     }
                 }
             }
         }
     }
 
-    void toggleState() {
-        ArrayList<Nonostate> list = new ArrayList<>(solutionsContainer);
-        int i = list.indexOf(state);
-        i++;
-        i %= list.size();
-        state = list.get(i);
-    }
-
     private Set<Nonostate> solveRecurisvely(Nonostate someState, int depth) {
         Set<Nonostate> solutions = new HashSet<>();
         for (int row = 0; row < getRows(); row++) {
             for (int col = 0; col < getCols(); col++) {
-                if (someState.get(row, col) == State.UNTOUCHED) {
+                if (someState.get(row, col) == CellState.UNTOUCHED) {
                     solutions.addAll(trySettingFieldXY(someState, row, col, depth));
                 }
             }
@@ -122,7 +87,7 @@ class Nonogram {
         if (depth < 5) System.out.printf("Trying %d:%d%n", row, col);
         if (depth % 10 == 0) System.out.println("Depth = " + depth);
         Nonostate myState = Nonostate.copyOf(someState);
-        myState.set(row, col, State.FILLED);
+        myState.set(row, col, CellState.FILLED);
         try {
             doDeterministicSolveUntilNoFurtherChange(myState);
             if (depth == 100) System.out.println(myState.getUntouchedCount());
@@ -171,12 +136,12 @@ class Nonogram {
             }
 
             @Override
-            public State getState(int i) {
+            public CellState getState(int i) {
                 return state.get(row, i);
             }
 
             @Override
-            public void setState(int i, State newState) {
+            public void setState(int i, CellState newState) {
                 state.set(row, i, newState);
             }
 
@@ -200,12 +165,12 @@ class Nonogram {
             }
 
             @Override
-            public State getState(int i) {
+            public CellState getState(int i) {
                 return state.get(i, col);
             }
 
             @Override
-            public void setState(int i, State newState) {
+            public void setState(int i, CellState newState) {
                 state.set(i, col, newState);
             }
 
@@ -247,6 +212,7 @@ class Nonogram {
 
         Nonogram build() {
             checkRowsAndColumnsHaveSameTotal();
+            nonogram.state = new Nonostate(nonogram.getRows(), nonogram.getCols());
             return nonogram;
         }
 

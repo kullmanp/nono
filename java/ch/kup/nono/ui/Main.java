@@ -1,4 +1,4 @@
-package ch.kup.nono.solver;
+package ch.kup.nono.ui;
 
 import javax.swing.*;
 
