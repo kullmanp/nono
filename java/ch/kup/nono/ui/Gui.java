@@ -10,7 +10,7 @@ public class Gui {
         JFrame frame = new JFrame("Nono");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        Nonoframe nonoframe = new Nonoframe(Examples.createExample52());
+        Nonoframe nonoframe = new Nonoframe(Examples.createExample13());
         frame.add(nonoframe, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
